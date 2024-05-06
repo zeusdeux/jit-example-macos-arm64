@@ -22,7 +22,7 @@ int main(void)
     return 1;
   }
 
-  void *code = mmap(NULL, fc.size, PROT_EXEC | PROT_WRITE | PROT_READ, MAP_ANONYMOUS | MAP_PRIVATE | MAP_JIT, -1, 0);
+  void *code = mmap(NULL, fc.size, PROT_EXEC | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE | MAP_JIT, -1, 0);
 
   if (code == MAP_FAILED) {
     log(L_ERROR, "Loading code into memory failed: %s", strerror(errno));
