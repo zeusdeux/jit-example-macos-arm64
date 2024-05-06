@@ -28,10 +28,10 @@ int main(int argc, char **argv)
     return 1;
   }
 
-  fl_content_t fc = fl_read_file_str(file_path, "rb");
+  fl_content_t fc = fl_read_file(file_path, "rb");
 
-  if (!fc.is_valid) {
-    log(L_ERROR, "Reading flat binary failed: %s", fc.err_msg);
+  if (fc.err) {
+    log(L_ERROR, "Reading flat binary failed: %s", fc.err);
     return 1;
   }
 
