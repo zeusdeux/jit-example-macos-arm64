@@ -9,11 +9,24 @@
 #define ZDX_FILE_IMPLEMENTATION
 #include "./zdx_file.h"
 
-typedef void(*code_t)(void);
+typedef void(*hello_t)(void);
+typedef void(*write_t)(const char *msg, const size_t len, const int8_t exit_code);
 
-int main(void)
+int main(int argc, char **argv)
 {
-  const char *file_path = "./hello_flat.bin";
+  if (argc < 2) {
+    log(L_ERROR, "Usage:\n\t jit <path to flat binary>");
+    return 1;
+  }
+
+  const char *file_path = argv[1];
+  const bool is_write_bin = strstr(file_path, "write") != NULL;
+
+  // we expect the msg and exit code in argv as well when running ./write_flat.bin
+  if (is_write_bin && argc < 4) {
+    log(L_ERROR, "Usage:\n\t jit ./write_flat.bin <msg> <exit code>");
+    return 1;
+  }
 
   fl_content_t fc = fl_read_file_str(file_path, "rb");
 
@@ -50,7 +63,20 @@ int main(void)
   sys_icache_invalidate(code, fc.size);
 
   // execute loaded instructions!
-  ((code_t)code)();
+  if (is_write_bin) {
+    const char *msg = argv[2];
+    const size_t msg_len = strlen(msg) + 1; // + 1 for \0
+    char final_msg[msg_len + 1]; // + 1 for \n and not + 2 as we already have space for \0 from above
+                                 //
+    strlcpy(final_msg, msg, msg_len); // copy input string until \0
+    strlcat(final_msg, "\n", msg_len + 1); // append \n at the end of input string + \0
+
+    const int8_t exit_code = atoi(argv[3]);
+
+    ((write_t)code)(final_msg, strlen(final_msg), exit_code);
+  } else {
+    ((hello_t)code)();
+  }
 
   fc_deinit(&fc);
 

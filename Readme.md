@@ -5,7 +5,11 @@ Playing around with some JIT-ting (using `mmap`) on macOS with Apple Silicon (te
 To execute, `make clean run`.
 
 > Output:<br>
-> Hello, World from arm64 assembly!<br>
-> make: *** [run] Error 69
+> ./jit ./hello_flat.bin<br>
+> Hello, world from arm64 assembly!<br>
+> <br>
+> ./jit ./write_flat.bin "Message from shell invocation to C program to assembly routine :)" 69<br>
+> Message from shell invocation to C program to assembly routine :)<br>
+> make: *** [run] Error 69<br>
 
 If the entitlements are missing, run `make entitlements`

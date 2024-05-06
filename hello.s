@@ -26,9 +26,9 @@ _start:
         svc 0x80                ; syscall SWI_SYSCALL found in /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/mach/arm/vm_param.h and used in /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/mach/arm/syscall_sw.h
 
         mov x16, #1              ; 1 -> exit syscall
-        mov x0, #69              ; exit code is 69
+        mov x0, #0               ; exit this routine with 0
         svc 0x80
         ret
 
-msg:    .ascii "Hello, World from arm64 assembly!\n"
+msg:    .ascii "Hello, world from arm64 assembly!\n"
         .equ msg_len, . - msg
