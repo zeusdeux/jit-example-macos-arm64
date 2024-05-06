@@ -7,3 +7,5 @@ To execute, `make clean run`.
 > Output:<br>
 > Hello, World from arm64 assembly!<br>
 > make: *** [run] Error 69
+
+If the entitlements are missing, run `make entitlements`

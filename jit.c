@@ -36,11 +36,20 @@ int main(void)
 #endif
 
   // FROM: https://medium.com/@gamedev0909/jit-in-c-injecting-machine-code-at-runtime-1463402e6242
+  // allow memcpy-ing raw instruction bytes into mmap-ed region (aka allow writes to it)
   pthread_jit_write_protect_np(0);
+
+  // copy instructions to mmap-ed PROT_EXEC region
   memcpy(code, fc.contents, fc.size);
+
+  // lock down mmap-ed region again (aka disallow writes to it)
   pthread_jit_write_protect_np(1);
+
+  // invalidate the memory page so that instruction caches are coherent with newly written data into mmap-ed region
+  // https://developer.apple.com/documentation/apple-silicon/porting-just-in-time-compilers-to-apple-silicon?language=objc
   sys_icache_invalidate(code, fc.size);
 
+  // execute loaded instructions!
   ((code_t)code)();
 
   fc_deinit(&fc);
