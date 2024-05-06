@@ -16,6 +16,12 @@ int main(void)
   const char *file_path = "./hello_flat.bin";
 
   fl_content_t fc = fl_read_file_str(file_path, "rb");
+
+  if (!fc.is_valid) {
+    log(L_ERROR, "Reading flat binary failed: %s", fc.err_msg);
+    return 1;
+  }
+
   void *code = mmap(NULL, fc.size, PROT_EXEC | PROT_WRITE | PROT_READ, MAP_ANONYMOUS | MAP_PRIVATE | MAP_JIT, -1, 0);
 
   if (code == MAP_FAILED) {
